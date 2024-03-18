@@ -26,3 +26,4 @@ These additional references should also help you:
 ### Commands Cheatsheet:
 
 - `./gradlew build`
+- `./gradlew test`
