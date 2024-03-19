@@ -153,7 +153,7 @@ class CashCardApplicationTests {
 	void shouldNotAllowAccessToCashCardsTheyDoNotOwn() {
 		ResponseEntity<String> response = restTemplate.withBasicAuth("sarah1", "abc123")
 				.getForEntity("/api/v1/cashcards/102", String.class);
-		assertThat(response.getStatusCode()).isEwualTo(HttpStatus.NOT_FOUND);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
 	}
 
 }
