@@ -12,3 +12,5 @@
   - protect the client and server from being overwhelmed by a large amount of data (the page size puts a cap on the amount of data that can be returned in a single response)
 
 - When we add the Spring Security dependency to our application, security gets enabled by default. If we don't specify how authentication and authorization should be performed, Spring Security completely locks down our API. Better safe than sorry.
+
+- It's important to understand that any information returned from our application might be useful to a bad actor attempting to violate our application's security. For example: knowledge about actions that causes our application to crash -- a 500 INTERNAL_SERVER_ERROR. In order to avoid "leaking" information about our application, Spring Security has configured Spring Web to return a generic 403 FORBIDDEN in most error conditions. If almost everything results in a 403 FORBIDDEN response then an attacker doesn't really know what's going on.
