@@ -18,7 +18,7 @@ public class SecurityConfig {
 
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(request -> request.requestMatchers("/api/v1/cashcards/**").authenticated())
+        http.authorizeHttpRequests(request -> request.requestMatchers("/api/v1/cashcards/**").hasRole("CARD-OWNER"))
                 .httpBasic(Customizer.withDefaults()).csrf(csrf -> csrf.disable());
         return http.build();
     }
