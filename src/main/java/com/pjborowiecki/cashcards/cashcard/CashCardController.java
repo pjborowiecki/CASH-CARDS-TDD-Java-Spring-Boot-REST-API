@@ -1,4 +1,4 @@
-package com.pjborowiecki.cashcards;
+package com.pjborowiecki.cashcards.cashcard;
 
 import java.net.URI;
 import java.util.List;
@@ -21,7 +21,7 @@ public class CashCardController {
         this.cashCardRepository = cashCardRepository;
     }
 
-    @GetMapping
+    @GetMapping()
     private ResponseEntity<List<CashCard>> findAll(Pageable pageable) {
         Page<CashCard> page = cashCardRepository.findAll(
                 PageRequest.of(

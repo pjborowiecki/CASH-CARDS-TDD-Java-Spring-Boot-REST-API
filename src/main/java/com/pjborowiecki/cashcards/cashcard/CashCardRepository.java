@@ -1,4 +1,4 @@
-package com.pjborowiecki.cashcards;
+package com.pjborowiecki.cashcards.cashcard;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
