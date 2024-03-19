@@ -1,12 +1,15 @@
 package com.pjborowiecki.cashcards;
 
 import java.util.Optional;
+import java.net.URI;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @RestController
 @RequestMapping("/api/v1/cashcards")
@@ -29,8 +32,10 @@ public class CashCardController {
     }
 
     @PostMapping
-    private ResponseEntity<Void> createCashCard() {
-        return null;
+    private ResponseEntity<Void> createCashCard(@RequestBody CashCard newCashCardRequest, UriComponentsBuilder ucb) {
+        CashCard savedCashCard = cashCardRepository.save(newCashCardRequest);
+        URI newCashCardLocation = ucb.path("/api/v1/cashcards/{id}").buildAndExpand(savedCashCard.id()).toUri();
+        return ResponseEntity.created(newCashCardLocation).build();
     }
 
 }

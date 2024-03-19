@@ -46,5 +46,14 @@ class CashCardApplicationTests {
 		URI locationOfNewCashCard = createResponse.getHeaders().getLocation();
 		ResponseEntity<String> getResponse = restTemplate.getForEntity(locationOfNewCashCard, String.class);
 		assertThat(getResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+		DocumentContext documentContext = JsonPath.parse(getResponse.getBody());
+
+		Number id = documentContext.read("$.id");
+		assertThat(id).isNotNull();
+
+		Double amount = documentContext.read("$.amount");
+		assertThat(amount).isEqualTo(250.00);
+
 	}
 }
