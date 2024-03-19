@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.annotation.DirtiesContext.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
+// @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 class CashCardApplicationTests {
 
 	@Autowired
@@ -26,6 +26,28 @@ class CashCardApplicationTests {
 	void shouldReturnAllCashCardsWhenListIsRequired() {
 		ResponseEntity<String> response = restTemplate.getForEntity("/api/v1/cashcards", String.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+		DocumentContext documentContext = JsonPath.parse(response.getBody());
+
+		int cashCardCount = documentContext.read("$.length()");
+		assertThat(cashCardCount).isEqualTo(3);
+
+		JSONArray ids = documentContext.read("$..id");
+		assertThat(ids).containsExactlyInAnyOrder(99, 100, 101);
+
+		JSONArray amounts = documentContext.read("$..amount");
+		assertThat(amounts).containsExactlyInAnyOrder(123.45, 1.0, 150.00);
+	}
+
+	@Test
+	void shouldReturnAPageOfCashCards() {
+		ResponseEntity<String> response = restTemplate.getForEntity("/api/v1/cashcards?page=0&size=1", String.class);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+		DocumentContext documentContext = JsonPath.parse(response.getBody());
+
+		JSONArray page = documentContext.read("$[*]");
+		assertThat(page.size()).isEqualTo(1);
 	}
 
 	@Test
@@ -50,7 +72,7 @@ class CashCardApplicationTests {
 	}
 
 	@Test
-	// @DirtiesContext
+	@DirtiesContext
 	void shouldCreateANewCashCard() {
 		CashCard newCashCard = new CashCard(null, 250.00);
 		ResponseEntity<Void> createResponse = restTemplate.postForEntity("/api/v1/cashcards", newCashCard, Void.class);
