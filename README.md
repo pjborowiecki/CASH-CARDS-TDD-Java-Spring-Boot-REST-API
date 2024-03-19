@@ -24,3 +24,13 @@
   - Return `201 CREATED` (if you created the object), or `200 OK` (if you replaced an existing object). In this case, it's recommended to return the object in the response body. This is useful if data was added to the object by the server (for example, if the server records the creation date).
 
   - Return `204 NO CONTENT`, and an empty response body. The rationale in this case is that since a PUT simply places an object at the URI in the request, the client doesn't need any information back - it knows that the object in the request has been saved, verbatim, on the server.
+
+  - Additional info for debugging can be accessed by altering the `build.gradle` file:
+    ```
+      test {
+        testLogging {
+            ...
+            showStandardStreams = true
+        }
+      }
+    ```

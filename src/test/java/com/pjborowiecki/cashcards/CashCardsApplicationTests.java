@@ -163,8 +163,8 @@ class CashCardApplicationTests {
 	void shouldUpdateAnExistingCashCard() {
 		CashCard cashCardUpdate = new CashCard(null, 19.99, null);
 		HttpEntity<CashCard> request = new HttpEntity<>(cashCardUpdate);
-		ResponseEntity<Void> response = restTemplate.withBasicAuth("sarah1", "abc123").exchange("/api/v1/cashcards/99",
-				HttpMethod.PUT, request, Void.class);
+		ResponseEntity<Void> response = restTemplate.withBasicAuth("sarah1", "abc123")
+				.exchange("/api/v1/cashcards/99", HttpMethod.PUT, request, Void.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
 
 		ResponseEntity<String> getResponse = restTemplate.withBasicAuth("sarah1", "abc123")
@@ -179,6 +179,15 @@ class CashCardApplicationTests {
 		Double amount = documentContext.read("$.amount");
 		assertThat(amount).isEqualTo(19.99);
 
+	}
+
+	@Test
+	void shouldNotUpdateACashCardThatDoesNotExist() {
+		CashCard unknownCard = new CashCard(null, 19.99, null);
+		HttpEntity<CashCard> request = new HttpEntity<>(unknownCard);
+		ResponseEntity<Void> response = restTemplate.withBasicAuth("sarah1", "abc123")
+				.exchange("/api/v1/cashcards/99999", HttpMethod.PUT, request, Void.class);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
 	}
 
 }
