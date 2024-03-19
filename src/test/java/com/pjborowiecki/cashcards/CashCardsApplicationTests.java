@@ -1,6 +1,7 @@
 package com.pjborowiecki.cashcards;
 
 import java.net.URI;
+import net.minidev.json.JSONArray;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.DocumentContext;
 import org.junit.jupiter.api.Test;
@@ -9,10 +10,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.annotation.DirtiesContext;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.annotation.DirtiesContext.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 class CashCardApplicationTests {
+
 	@Autowired
 	TestRestTemplate restTemplate;
 
@@ -38,6 +44,7 @@ class CashCardApplicationTests {
 	}
 
 	@Test
+	// @DirtiesContext
 	void shouldCreateANewCashCard() {
 		CashCard newCashCard = new CashCard(null, 250.00);
 		ResponseEntity<Void> createResponse = restTemplate.postForEntity("/api/v1/cashcards", newCashCard, Void.class);
