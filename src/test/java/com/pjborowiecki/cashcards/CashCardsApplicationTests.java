@@ -166,6 +166,19 @@ class CashCardApplicationTests {
 		ResponseEntity<Void> response = restTemplate.withBasicAuth("sarah1", "abc123").exchange("/api/v1/cashcards/99",
 				HttpMethod.PUT, request, Void.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+
+		ResponseEntity<String> getResponse = restTemplate.withBasicAuth("sarah1", "abc123")
+				.getForEntity("/api/v1/cashcards/99", String.class);
+		assertThat(getResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+		DocumentContext documentContext = JsonPath.parse(getResponse.getBody());
+
+		Number id = documentContext.read("$.id");
+		assertThat(id).isEqualTo(99);
+
+		Double amount = documentContext.read("$.amount");
+		assertThat(amount).isEqualTo(19.99);
+
 	}
 
 }
