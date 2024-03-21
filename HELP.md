@@ -28,3 +28,8 @@ These additional references should also help you:
 - `./gradlew build`
 - `./gradlew test`
 - `./gradlew bootRun`
+
+- HttpPie examples:
+
+  - `http -a user:${spring_security_auto_generated_password} :8080/api/v1/cashcards`
+  - `http -a user:${spring_security_auto_generated_password} :8080/api/v1/cashcards "Accept: application/json" amount=1 owner=sarah1`

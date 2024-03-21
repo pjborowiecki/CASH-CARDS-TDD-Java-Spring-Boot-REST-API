@@ -15,6 +15,10 @@
 
 - It's important to understand that any information returned from our application might be useful to a bad actor attempting to violate our application's security. For example: knowledge about actions that causes our application to crash -- a 500 INTERNAL_SERVER_ERROR. In order to avoid "leaking" information about our application, Spring Security has configured Spring Web to return a generic 403 FORBIDDEN in most error conditions. If almost everything results in a 403 FORBIDDEN response then an attacker doesn't really know what's going on.
 
+- Spring Security automatically configures your application to respond with best-practice settings for cache control and content-type fuzzing. It responds with secure headers for all requests (e.g., `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, and so on).
+
+- All requests require at least authentication by default, but `PUT`s, `POST`s, and `DELETE`s require a higher level of security to be allowed, such as adding a CSRF token.
+
 - Both `PUT` and `PATCH` can be used for updating, but they work in different ways. Essentially, `PUT` means “create or replace the complete record”, whereas `PATCH` means “update only some fields of the existing record” - in other words, a partial update. Partial updates free the client from having to load the entire record and then transmit the entire record back to the server. If the record is large enough, this can have a non-trivial impact on performance.
 
 - The HTTP standard doesn't specify whether the `POST` or `PUT` verb is preferred for a Create operation! However, if you need the server to return the URI of the created resource (or the data you use to construct the URI), then you must use `POST`. Alternatively, when the resource URI is known at creation time, you can use `PUT`.
@@ -36,3 +40,31 @@
     ```
 
 - `	@DirtiesContext` should be added to all tests that change the data. If we don't add this annotation, these tests could affect the result of other tests in the file.
+
+- Some authentication schemes are stateful, while others are stateless. Stateful means that your application remembers information about previous requests. Stateless means that your application remembers nothing about any previous requests.
+
+  - **Form Login** is an example of a stateful authentication scheme. It stores the logged in user in a session. So long as the session's identifier is returned on subsequent requests, then the end user doesn't need to provide credentials again.
+
+  - **HTTP Basic** is an example of a stateless authentication scheme. Since it remembers nothing from previous requests, you need to give it the username and password on every request.
+
+- Spring Security activates HTTP Basic and Form Login authentication schemes by default. You can specify them and others directly with a custom `SecurityFilterChain` instance.
+
+- JSON Web Token (JWT) is an industry standard format for encoding access tokens. In other words, when an authorization server mints an access token, it can write it in the widely-adopted JWT format. A decoded JWT at its most basic is a set of `headers` and `claims`:
+
+  - `Headers`: contain metadata about the token, like how a resource server should process it.
+  - `Claims`: facts that the token is asserting, like what principal the token represents. They are called "claims" because they still need to be verified by the resource server – the JWT "claims" these facts to be true. For example:
+
+    - The `iss` claim identifies the authorization server that minted the token.
+    - The `exp` claim indicates when the token expires.
+    - The `scp` claim indicates the set of permissions the authorization server granted.
+    - The `sub` claim is a reference to the principal the token represents.
+
+- **It's a common temptation to want to use the JWT in stateful ways, like representing a session. Since this authentication scheme is stateless (like HTTP Basic), this is almost always a bad idea.**. JWTs expiry cannot be updated, but a session's expiry is updated on each request. Also consider that a person can log out and thus the session can be expired, but a JWT can't be expired (since its expiry cannot be edited). These important mismatches appear when we try to use a stateless token in stateful ways like session management.
+
+- Using OAuth 2.0 terminology, replacing the Spring Security default HTTP Basic with OAuth 2.0 Bearer JWT Authentication turns our REST API ino an **OAuth 2.0 Resource Server**.
+
+- Spring Security and Spring MVC provides multiple ways to access authentication information in your web application.
+
+  - The `Authentication` method parameter type allows direct access to the authentication object.
+  - The `@CurrentSecurityContext` annotation grants access to the entire security context, providing a comprehensive view of the authentication and other security-related information; remember that it provides the use of SpEL, type conversion and meta-annotations.
+  - Finally, the `@AuthenticationPrincipal` annotation is suitable for extracting type-specific information from the principal, and you can see it as an alias of the `@CurrentSecurityContext(expression = "authentication.principal")`.
