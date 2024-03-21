@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.CurrentSecurityContext;
 
 @RestController
 @RequestMapping("/api/v1/cashcards")
@@ -23,14 +24,9 @@ public class CashCardController {
     }
 
     @GetMapping
-    public ResponseEntity<Iterable<CashCard>> findAll(Authentication authentication) {
-        var filteredCashCards = new ArrayList<CashCard>();
-        this.cashCardRepository.findAll().forEach(cashCard -> {
-            if (cashCard.owner().equals(authentication.getName())) {
-                filteredCashCards.add(cashCard);
-            }
-        });
-        return ResponseEntity.ok(filteredCashCards);
+    public ResponseEntity<Iterable<CashCard>> findAll(@CurrentOwner String owner) {
+        var result = this.cashCardRepository.findByOwner(owner);
+        return ResponseEntity.ok(result);
     }
 
     @GetMapping("{requestedId}")
