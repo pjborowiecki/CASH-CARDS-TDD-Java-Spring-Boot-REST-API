@@ -27,3 +27,4 @@ These additional references should also help you:
 
 - `./gradlew build`
 - `./gradlew test`
+- `./gradlew bootRun`
