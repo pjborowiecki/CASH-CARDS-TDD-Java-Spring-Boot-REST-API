@@ -68,3 +68,23 @@
   - The `Authentication` method parameter type allows direct access to the authentication object.
   - The `@CurrentSecurityContext` annotation grants access to the entire security context, providing a comprehensive view of the authentication and other security-related information; remember that it provides the use of SpEL, type conversion and meta-annotations.
   - Finally, the `@AuthenticationPrincipal` annotation is suitable for extracting type-specific information from the principal, and you can see it as an alias of the `@CurrentSecurityContext(expression = "authentication.principal")`.
+
+- Before authentication is attempted, Spring Security defends the application against malicious requests. These filters include:
+
+  - `CsrfFilter`: the filter that checks incoming CSRF tokens and issues new ones
+  - `HeaderFilter`: the filter that writes secure headers to the HTTP response
+
+- Once the request is determined to be safe, the filter chain moves on to authenticating the request. Each authentication filter handles a single authentication scheme. For example:
+
+  - `BasicAuthenticationFilter` - Handles HTTP Basic Authentication
+  - `BearerTokenAuthenticationFilter` - Handles Bearer Token Authentication (including JWTs)
+  - `UsernamePasswordAuthenticationFilter` - Handles Form Login Authentication
+  - `AnonymousAuthenticationFilter` - Populates the context with a Null Object authentication instance
+
+- `Authentication` is a Spring Security interface that represents both an authentication token (material to be authenticated, like a JWT) and an authentication result (authenticated material). If authentication fails, the `authenticationManager` throws an exception. This means that if the `authenticationManager` returns an `Authentication`, then the authentication succeeded.
+
+- `AuthenticationManager` is an interface that tests an authentication token. If the test succeeds, then the `AuthenticationManager` constructs an authentication result. The `AuthenticationManager` is composed of several `AuthenticationProviders`, each of which handle a single authentication scheme, like authenticating a JWT.
+
+- The `SecurityContext` is an object that holds the current `Authentication` (with Principal, Credentials, and Authorities)
+
+- The reason for `SecurityContext` is so that applications can hold additional security information other than the current user, if they want to; however, this is a feature that is very rarely exercised in Spring Security.
