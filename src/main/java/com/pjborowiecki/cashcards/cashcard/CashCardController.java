@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.CurrentSecurityContext;
 
 @RestController
 @RequestMapping("/api/v1/cashcards")
@@ -36,9 +34,11 @@ public class CashCardController {
     }
 
     @PostMapping
-    private ResponseEntity<CashCard> createCashCard(@RequestBody CashCard newCashCardRequest,
+    public ResponseEntity<CashCard> createCashCard(
+            @RequestBody CashCardRequest createCashCardRequest,
+            @CurrentOwner String owner,
             UriComponentsBuilder ucb) {
-        CashCard newCashCard = cashCardRepository.save(newCashCardRequest);
+        CashCard newCashCard = this.cashCardRepository.save(new CashCard(createCashCardRequest.amount(), owner));
         URI newCashCardLocation = ucb.path("/api/v1/cashcards/{id}").buildAndExpand(newCashCard.id()).toUri();
         return ResponseEntity.created(newCashCardLocation).body(newCashCard);
     }

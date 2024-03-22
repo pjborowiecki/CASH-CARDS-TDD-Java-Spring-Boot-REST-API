@@ -43,7 +43,6 @@ class CashCardApplicationTests {
 				.content("""
 						{
 						    "amount" : 250.00,
-						    "owner"  : "sarah1"
 						}
 						"""))
 				.andExpect(status().isCreated())
