@@ -8,12 +8,8 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.security.test.context.support.WithMockUser;
 
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.everyItem;
-import static org.hamcrest.Matchers.equalTo;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.hamcrest.Matchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -34,6 +30,7 @@ class CashCardApplicationTests {
 				.andExpect(jsonPath("$.owner").value("sarah1"));
 	}
 
+	@WithMockUser(username = "esuez5")
 	@Test
 	@DirtiesContext
 	void shouldCreateANewCashCard() throws Exception {
@@ -42,7 +39,7 @@ class CashCardApplicationTests {
 				.contentType("application/json")
 				.content("""
 						{
-						    "amount" : 250.00,
+						    "amount" : 250.00
 						}
 						"""))
 				.andExpect(status().isCreated())
@@ -52,7 +49,7 @@ class CashCardApplicationTests {
 		this.mvc.perform(get(location))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.amount").value(250.00))
-				.andExpect(jsonPath("$.owner").value("sarah1"));
+				.andExpect(jsonPath("$.owner").value("esuez5"));
 	}
 
 	@Test
