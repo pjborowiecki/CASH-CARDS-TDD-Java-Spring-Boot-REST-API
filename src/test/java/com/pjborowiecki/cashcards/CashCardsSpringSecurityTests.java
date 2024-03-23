@@ -2,6 +2,7 @@ package com.pjborowiecki.cashcards;
 
 import java.time.Instant;
 import java.util.Arrays;
+import java.util.List;
 import java.util.function.Consumer;
 import org.junit.jupiter.api.Test;
 import com.nimbusds.jose.jwk.JWKSet;
@@ -47,7 +48,7 @@ public class CashCardsSpringSecurityTests {
                 .expiresAt(Instant.now().plusSeconds(100000))
                 .subject("sarah1")
                 .issuer("http://localhost:9000")
-                .audience(Arrays.asList("cashcard-client"))
+                .audience(Arrays.asList("cashcards-client"))
                 .claim("scp", Arrays.asList("cashcard:read", "cashcard:write"));
         consumer.accept(builder);
         JwtEncoderParameters parameters = JwtEncoderParameters.from(builder.build());
@@ -70,6 +71,14 @@ public class CashCardsSpringSecurityTests {
         this.mvc.perform(get("/api/v1/cashcards/100")
                 .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    void shouldNotAllowTokensWithAnInvalidAudience() throws Exception {
+        String token = mint((claims) -> claims.audience(List.of("https://this-is-so-wrong")));
+        this.mvc.perform(get("/api/v1/cashcards/100").header("Authorization", "Bearer " + token))
+                .andExpect(status().isUnauthorized())
+                .andExpect(header().string("WWW-Authenticate", containsString("aud claim is not valid")));
     }
 
 }
