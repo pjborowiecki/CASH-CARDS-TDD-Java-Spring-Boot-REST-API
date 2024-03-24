@@ -60,4 +60,11 @@ class CashCardApplicationTests {
 				.andExpect(jsonPath("$..owner").value(everyItem(equalTo("sarah1"))));
 	}
 
+	@Test
+	@WithMockUser(username = "esuez5", authorities = { "SCOPE_cashcard:read" })
+	void shouldReturnForbiddenWhenCardBelongsToSomeoneElse() throws Exception {
+		this.mvc.perform(get("/api/v1/cashcards/99"))
+				.andExpect(status().isForbidden());
+	}
+
 }
