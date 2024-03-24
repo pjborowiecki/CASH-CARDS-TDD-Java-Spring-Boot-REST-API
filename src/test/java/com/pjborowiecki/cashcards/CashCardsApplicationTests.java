@@ -16,7 +16,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@WithMockUser(username = "sarah1")
+@WithMockUser(username = "sarah1", authorities = { "SCOPE_cashcard:read" })
 class CashCardApplicationTests {
 
 	@Autowired
@@ -30,9 +30,9 @@ class CashCardApplicationTests {
 				.andExpect(jsonPath("$.owner").value("sarah1"));
 	}
 
-	@WithMockUser(username = "esuez5")
 	@Test
 	@DirtiesContext
+	@WithMockUser(username = "esuez5", authorities = { "SCOPE_cashcard:read", "SCOPE_cashcard:write" })
 	void shouldCreateANewCashCard() throws Exception {
 		String location = this.mvc.perform(post("/api/v1/cashcards")
 				.with(csrf())
