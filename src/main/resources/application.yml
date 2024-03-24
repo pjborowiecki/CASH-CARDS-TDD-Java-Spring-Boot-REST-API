@@ -8,3 +8,4 @@ spring:
         jwt:
           public-key-location: classpath:authz.pub
           audiences: cashcards-client
+          # issuer-uri: http://localhost:9000

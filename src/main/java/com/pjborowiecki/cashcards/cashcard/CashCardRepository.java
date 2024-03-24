@@ -1,9 +1,6 @@
 package com.pjborowiecki.cashcards.cashcard;
 
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.Authentication;
 import org.springframework.data.jdbc.repository.query.Query;
 
 public interface CashCardRepository extends CrudRepository<CashCard, Long> {
