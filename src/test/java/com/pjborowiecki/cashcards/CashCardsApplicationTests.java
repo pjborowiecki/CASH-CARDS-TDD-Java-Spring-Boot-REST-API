@@ -59,4 +59,5 @@ class CashCardApplicationTests {
 				.andExpect(jsonPath("$.length()").value(2))
 				.andExpect(jsonPath("$..owner").value(everyItem(equalTo("sarah1"))));
 	}
+
 }

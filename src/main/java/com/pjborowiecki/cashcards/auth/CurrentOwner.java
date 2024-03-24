@@ -1,4 +1,4 @@
-package com.pjborowiecki.cashcards.cashcard;
+package com.pjborowiecki.cashcards.auth;
 
 import java.lang.annotation.Target;
 import java.lang.annotation.Retention;

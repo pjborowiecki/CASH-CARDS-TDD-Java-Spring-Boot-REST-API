@@ -88,3 +88,5 @@
 - The `SecurityContext` is an object that holds the current `Authentication` (with Principal, Credentials, and Authorities)
 
 - The reason for `SecurityContext` is so that applications can hold additional security information other than the current user, if they want to; however, this is a feature that is very rarely exercised in Spring Security.
+
+- `ObjectMapper` gives us the ability to turn a Java object into JSON, which we can add to error responses.
